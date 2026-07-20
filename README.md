@@ -87,7 +87,7 @@ double-charge guard rather than the merchant's database.
 ## Install
 
 ```bash
-npm install hood-pay viem
+npm install @three-ws/hood-pay viem
 ```
 
 Node >= 20. `viem` is a peer dependency, needed on the server and in the
@@ -100,7 +100,7 @@ import express from 'express'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { robinhood } from 'viem/chains'
-import { HoodPayMerchant, SqliteStore, expressHoodPay } from 'hood-pay/server'
+import { HoodPayMerchant, SqliteStore, expressHoodPay } from '@three-ws/hood-pay/server'
 
 const account = privateKeyToAccount(process.env.HOOD_PAY_RELAYER_KEY as `0x${string}`)
 const transport = http('https://rpc.mainnet.chain.robinhood.com')
@@ -194,7 +194,7 @@ hood-pay-button {
 React:
 
 ```tsx
-import { HoodPayButton } from 'hood-pay/widget/react'
+import { HoodPayButton } from '@three-ws/hood-pay/widget/react'
 
 <HoodPayButton
   intentId={intentId}
@@ -218,7 +218,7 @@ anyone can confirm the payment without asking the merchant, hood-pay, or an
 indexer:
 
 ```ts
-import { verifyReceipt, formatVerification } from 'hood-pay/verify'
+import { verifyReceipt, formatVerification } from '@three-ws/hood-pay/verify'
 
 const result = await verifyReceipt({ receipt })   // uses the public RPC by default
 console.log(formatVerification(result))
@@ -246,7 +246,7 @@ and the signature that authorized it is permanently consumed.
 No receipt? A transaction hash and what you were owed is enough:
 
 ```ts
-import { verifyPaymentByHash } from 'hood-pay/verify'
+import { verifyPaymentByHash } from '@three-ws/hood-pay/verify'
 
 const result = await verifyPaymentByHash({
   txHash: '0xabc...',
@@ -275,7 +275,7 @@ Hood-Pay-Signature: t=1763558400,v1=0x9f2c...
 The signed string is `${t}.${rawBody}`. Verify with the shipped helper:
 
 ```ts
-import { constructWebhookEvent } from 'hood-pay/server'
+import { constructWebhookEvent } from '@three-ws/hood-pay/server'
 
 app.post('/hooks/hood-pay', express.raw({ type: 'application/json' }), async (req, res) => {
   try {

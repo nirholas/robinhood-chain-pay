@@ -39,7 +39,7 @@ import express from 'express'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { robinhoodTestnet } from 'viem/chains'
-import { HoodPayMerchant, SqliteStore, expressHoodPay } from 'hood-pay/server'
+import { HoodPayMerchant, SqliteStore, expressHoodPay } from '@three-ws/hood-pay/server'
 
 const account = privateKeyToAccount(process.env.HOOD_PAY_RELAYER_KEY as `0x${string}`)
 const transport = http('https://rpc.testnet.chain.robinhood.com')
@@ -84,7 +84,7 @@ own namespace, pass `basePath: '/hood-pay'`.
 
 ```ts
 import { Hono } from 'hono'
-import { honoHoodPay } from 'hood-pay/server'
+import { honoHoodPay } from '@three-ws/hood-pay/server'
 
 const app = new Hono()
 app.use('*', honoHoodPay({ merchant, apiKey: process.env.HOOD_PAY_API_KEY }))
@@ -156,7 +156,7 @@ the browser: it mints payment links in your name.
 Drive it yourself with `hood-pay/client`:
 
 ```ts
-import { HoodPayCheckout } from 'hood-pay/client'
+import { HoodPayCheckout } from '@three-ws/hood-pay/client'
 
 const checkout = new HoodPayCheckout({
   intentId,
@@ -176,7 +176,7 @@ the callback.
 
 ```ts
 import express from 'express'
-import { constructWebhookEvent } from 'hood-pay/server'
+import { constructWebhookEvent } from '@three-ws/hood-pay/server'
 
 // Mount BEFORE express.json(). The signature covers the exact bytes received.
 app.post('/hooks/hood-pay', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -224,7 +224,7 @@ is not retried.
 Never rely solely on your own database for a fact the chain already knows.
 
 ```ts
-import { verifyReceipt } from 'hood-pay/verify'
+import { verifyReceipt } from '@three-ws/hood-pay/verify'
 
 const result = await verifyReceipt({ receipt, intent })
 if (!result.valid) {
@@ -265,7 +265,7 @@ Implement `PaymentStore`. Two methods carry every safety property, and both must
 be genuinely atomic:
 
 ```ts
-import type { PaymentStore } from 'hood-pay/server'
+import type { PaymentStore } from '@three-ws/hood-pay/server'
 
 class PostgresStore implements PaymentStore {
   // Must be a single INSERT ... ON CONFLICT. The id is derived from the

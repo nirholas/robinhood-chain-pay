@@ -11,7 +11,7 @@
  * build configuration and no `react/jsx-runtime` at any consumer's bundler.
  *
  * ```tsx
- * import { HoodPayButton } from 'hood-pay/widget/react'
+ * import { HoodPayButton } from '@three-ws/hood-pay/widget/react'
  *
  * <HoodPayButton
  *   intentId={intentId}

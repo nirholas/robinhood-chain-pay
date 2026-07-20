@@ -7,7 +7,7 @@ import { defineConfig } from 'tsup'
  * small enough to drop in with a single `<script>` tag.
  */
 export default defineConfig({
-  entry: { 'hood-pay': 'src/browser.ts' },
+  entry: { '@three-ws/hood-pay': 'src/browser.ts' },
   outDir: 'dist/browser',
   format: ['esm', 'iife'],
   globalName: 'HoodPay',

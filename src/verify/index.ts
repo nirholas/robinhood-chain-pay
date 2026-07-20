@@ -125,7 +125,7 @@ function same(a: string | undefined | null, b: string | undefined | null): boole
  * Verify a receipt against chain state.
  *
  * ```ts
- * import { verifyReceipt } from 'hood-pay/verify'
+ * import { verifyReceipt } from '@three-ws/hood-pay/verify'
  *
  * const result = await verifyReceipt({ receipt })
  * if (!result.valid) {

@@ -32,7 +32,7 @@
     never hold a native token, and never see the word "gas".
   </p>
   <div class="cta">
-    <span class="install"><span class="dollar">$</span> npm install hood-pay viem</span>
+    <span class="install"><span class="dollar">$</span> npm install @three-ws/hood-pay viem</span>
     <a class="btn primary" href="#quickstart">Get started</a>
     <a class="btn" href="#gasless">Why it works</a>
   </div>
@@ -151,7 +151,7 @@ PASS: USDG exposes EIP-3009 and the EIP-712 domain reconstructs on every network
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { robinhood } from 'viem/chains'
-import { HoodPayMerchant, SqliteStore, expressHoodPay } from 'hood-pay/server'
+import { HoodPayMerchant, SqliteStore, expressHoodPay } from '@three-ws/hood-pay/server'
 
 const account = privateKeyToAccount(process.env.HOOD_PAY_RELAYER_KEY)
 const transport = http('https://rpc.mainnet.chain.robinhood.com')
@@ -194,7 +194,7 @@ app.listen(3000)</code></pre>
 &lt;/script&gt;</code></pre>
     <p class="sub" style="margin-top:14px">
       27 kB minified, zero dependencies, everything inside a shadow root. React wrapper:
-      <code>import { HoodPayButton } from 'hood-pay/widget/react'</code>.
+      <code>import { HoodPayButton } from '@three-ws/hood-pay/widget/react'</code>.
     </p>
   </div>
 
@@ -216,7 +216,7 @@ console.log(url)  // https://shop.example.com/pay/pi_2f1c...</code></pre>
   </div>
 
   <div class="tab-panel" id="tab-hook" role="tabpanel" aria-labelledby="btn-hook">
-<pre><code>import { constructWebhookEvent } from 'hood-pay/server'
+<pre><code>import { constructWebhookEvent } from '@three-ws/hood-pay/server'
 
 // Mount BEFORE express.json(): the signature covers the exact bytes received.
 app.post('/hooks/hood-pay', express.raw({ type: 'application/json' }), async (req, res) =&gt; {
@@ -270,7 +270,7 @@ app.post('/hooks/hood-pay', express.raw({ type: 'application/json' }), async (re
     anyone with an RPC URL can confirm them without asking the merchant, hood-pay, or an
     indexer.
   </p>
-<pre><code>import { verifyReceipt, formatVerification } from 'hood-pay/verify'
+<pre><code>import { verifyReceipt, formatVerification } from '@three-ws/hood-pay/verify'
 
 const result = await verifyReceipt({ receipt })
 console.log(formatVerification(result))</code></pre>
@@ -315,7 +315,7 @@ console.log(formatVerification(result))</code></pre>
 
 <section class="block" id="install">
   <h2>Install</h2>
-<pre><code>npm install hood-pay viem</code></pre>
+<pre><code>npm install @three-ws/hood-pay viem</code></pre>
   <div class="grid" style="margin-top:16px">
     <div class="card"><h3><code>hood-pay</code></h3><p>Intents, amounts, EIP-712, receipts. No server or browser dependencies.</p></div>
     <div class="card"><h3><code>hood-pay/server</code></h3><p>Merchant, relay, webhooks, SQLite and in-memory stores, Express and Hono adapters.</p></div>

@@ -6,7 +6,7 @@
  * import { createPublicClient, createWalletClient, http } from 'viem'
  * import { privateKeyToAccount } from 'viem/accounts'
  * import { robinhood } from 'viem/chains'
- * import { HoodPayMerchant, SqliteStore, expressHoodPay } from 'hood-pay/server'
+ * import { HoodPayMerchant, SqliteStore, expressHoodPay } from '@three-ws/hood-pay/server'
  *
  * const account = privateKeyToAccount(process.env.HOOD_PAY_RELAYER_KEY as `0x${string}`)
  * const transport = http('https://rpc.mainnet.chain.robinhood.com')

@@ -123,7 +123,7 @@ function isAuthorized(req: HoodPayRequest, apiKey: string | undefined): boolean 
 function unauthorized(reason: string): HoodPayResponse {
   return {
     status: 401,
-    headers: { ...JSON_HEADERS, 'www-authenticate': 'Bearer realm="hood-pay"' },
+    headers: { ...JSON_HEADERS, 'www-authenticate': 'Bearer realm="@three-ws/hood-pay"' },
     body: JSON.stringify({ error: { code: 'config_invalid', message: reason, details: {} } }),
   }
 }

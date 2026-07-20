@@ -1,6 +1,6 @@
 {
-  "name": "hood-pay",
-  "version": "0.1.0",
+  "name": "@three-ws/hood-pay",
+  "version": "0.1.1",
   "description": "Stripe-Checkout-grade USDG payments for Robinhood Chain (chain 4663). Embeddable widget, hosted payment links, gasless EIP-3009 relay, HMAC webhooks, and a standalone merchant receipt-verification library.",
   "keywords": [
     "robinhood",
@@ -22,11 +22,11 @@
   "author": "nirholas (https://x.com/nichxbt)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nirholas/hood-pay.git"
+    "url": "git+https://github.com/nirholas/robinhood-chain-pay.git"
   },
-  "homepage": "https://nirholas.github.io/hood-pay/",
+  "homepage": "https://nirholas.github.io/robinhood-chain-pay/",
   "bugs": {
-    "url": "https://github.com/nirholas/hood-pay/issues"
+    "url": "https://github.com/nirholas/robinhood-chain-pay/issues"
   },
   "type": "module",
   "engines": {
