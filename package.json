@@ -1,0 +1,118 @@
+{
+  "name": "hood-pay",
+  "version": "0.1.0",
+  "description": "Stripe-Checkout-grade USDG payments for Robinhood Chain (chain 4663). Embeddable widget, hosted payment links, gasless EIP-3009 relay, HMAC webhooks, and a standalone merchant receipt-verification library.",
+  "keywords": [
+    "robinhood",
+    "robinhood-chain",
+    "usdg",
+    "checkout",
+    "payments",
+    "payment-links",
+    "eip-3009",
+    "transferwithauthorization",
+    "gasless",
+    "stablecoin",
+    "widget",
+    "web-component",
+    "webhooks",
+    "viem"
+  ],
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "nirholas (https://x.com/nichxbt)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nirholas/hood-pay.git"
+  },
+  "homepage": "https://nirholas.github.io/hood-pay/",
+  "bugs": {
+    "url": "https://github.com/nirholas/hood-pay/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": [
+    "./dist/widget/index.js",
+    "./dist/widget/index.cjs",
+    "./dist/browser/*"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js",
+      "require": "./dist/server/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js",
+      "require": "./dist/client/index.cjs"
+    },
+    "./widget": {
+      "types": "./dist/widget/index.d.ts",
+      "import": "./dist/widget/index.js",
+      "require": "./dist/widget/index.cjs"
+    },
+    "./widget/react": {
+      "types": "./dist/widget/react.d.ts",
+      "import": "./dist/widget/react.js",
+      "require": "./dist/widget/react.cjs"
+    },
+    "./verify": {
+      "types": "./dist/verify/index.d.ts",
+      "import": "./dist/verify/index.js",
+      "require": "./dist/verify/index.cjs"
+    },
+    "./browser": "./dist/browser/hood-pay.js",
+    "./hood-pay.iife.js": "./dist/browser/hood-pay.iife.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup --config tsup.config.ts && tsup --config tsup.browser.config.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests",
+    "test:watch": "vitest",
+    "verify:usdg": "node scripts/verify-usdg.mjs",
+    "example:server": "tsx examples/merchant-server.ts",
+    "verify:receipt": "tsx examples/verify-receipt.ts",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "hood402": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "viem": "^2.55.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.12",
+    "express": "^4.21.2",
+    "hono": "^4.6.14",
+    "react": "^18.3.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "viem": "^2.55.0",
+    "vitest": "^2.1.8"
+  }
+}
