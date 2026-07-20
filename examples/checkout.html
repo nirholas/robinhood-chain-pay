@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hood-pay widget example</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0; padding: 48px 20px; display: flex; justify-content: center;
+    background: #f6f7f9; color: #14161a;
+  }
+  @media (prefers-color-scheme: dark) { body { background: #0a0a0c; color: #ededf0; } }
+  .card { max-width: 460px; width: 100%; }
+  h1 { font-size: 22px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  p.sub { color: #5c6270; margin: 0 0 28px; }
+  @media (prefers-color-scheme: dark) { p.sub { color: #9c9ca6; } }
+  .product {
+    border: 1px solid #e2e5ea; border-radius: 14px; padding: 22px; margin-bottom: 20px;
+    background: #fff;
+  }
+  @media (prefers-color-scheme: dark) { .product { background: #131317; border-color: #26262d; } }
+  .product h2 { margin: 0 0 4px; font-size: 17px; }
+  .product .price { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; }
+  label { display: block; font-size: 13px; margin: 16px 0 6px; }
+  input {
+    width: 100%; padding: 9px 12px; font: inherit; border-radius: 8px;
+    border: 1px solid #d5d9e0; background: transparent; color: inherit;
+  }
+  #log {
+    margin-top: 22px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px; white-space: pre-wrap; color: #5c6270; min-height: 60px;
+  }
+  @media (prefers-color-scheme: dark) { #log { color: #9c9ca6; } }
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>hood-pay widget example</h1>
+  <p class="sub">
+    One script tag and one element. The customer signs a message, never sends a
+    transaction, and never needs gas.
+  </p>
+
+  <div class="product">
+    <h2>One large widget</h2>
+    <div class="price">12.50 USDG</div>
+
+    <label for="intent">Payment intent id</label>
+    <input id="intent" placeholder="pi_..." autocomplete="off" spellcheck="false">
+
+    <div style="margin-top:18px">
+      <hood-pay-button
+        id="pay"
+        label="Pay 12.50 USDG"
+        merchant-name="Example Shop"
+        theme="auto"></hood-pay-button>
+    </div>
+  </div>
+
+  <div id="log" role="status" aria-live="polite">Waiting for an intent id.</div>
+</main>
+
+<!--
+  The one script tag. In a real deployment this is
+  https://unpkg.com/hood-pay/dist/browser/hood-pay.iife.js; the example server
+  serves the local build at /dist so you can try changes without publishing.
+-->
+<script src="/dist/browser/hood-pay.iife.js"></script>
+<script>
+  const button = document.getElementById('pay')
+  const input = document.getElementById('intent')
+  const log = document.getElementById('log')
+
+  function write(line) {
+    log.textContent = `${line}\n${log.textContent}`.split('\n').slice(0, 12).join('\n')
+  }
+
+  // The example server appends ?intent=... to this page's URL at startup.
+  const fromQuery = new URLSearchParams(location.search).get('intent')
+  if (fromQuery) {
+    input.value = fromQuery
+    button.setAttribute('intent-id', fromQuery)
+    write(`Ready to pay ${fromQuery}`)
+  }
+
+  input.addEventListener('input', () => {
+    button.setAttribute('intent-id', input.value.trim())
+  })
+
+  button.addEventListener('hood-pay:state', (event) => {
+    write(`state: ${event.detail.state}`)
+  })
+
+  button.addEventListener('hood-pay:settled', (event) => {
+    const { receipt, explorerTxUrl } = event.detail
+    write(`settled: ${receipt ? receipt.amountFormatted : ''} USDG`)
+    if (receipt) write(`receipt digest: ${receipt.digest}`)
+    if (explorerTxUrl) write(`explorer: ${explorerTxUrl}`)
+    // This is where a real store would unlock the download, mark the order
+    // paid, or redirect. The webhook is the authoritative signal; this event
+    // is for the UI.
+  })
+
+  button.addEventListener('hood-pay:error', (event) => {
+    write(`error [${event.detail.code}]: ${event.detail.message}`)
+  })
+
+  button.addEventListener('hood-pay:close', () => {
+    write('checkout closed')
+  })
+</script>
+</body>
+</html>
