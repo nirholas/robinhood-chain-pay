@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hood-pay: Stripe-Checkout-grade USDG payments for Robinhood Chain</title>
+<meta name="description" content="Embeddable widget, hosted payment links, gasless EIP-3009 relay, HMAC webhooks, and standalone on-chain receipt verification for USDG on Robinhood Chain (chain 4663).">
+<link rel="stylesheet" href="./site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%BE%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<nav class="top" aria-label="Site">
+  <div class="wrap">
+    <a class="brand" href="./index.html">hood<span class="tick">-pay</span></a>
+    <div class="links">
+      <a href="#gasless">Gasless</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#states" class="hide-sm">States</a>
+      <a href="#verify">Verify</a>
+      <a href="#vs-hood402" class="hide-sm">vs hood402</a>
+      <a href="https://github.com/nirholas/robinhood-chain-pay">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <h1>Checkout on Robinhood Chain,<br><span class="grad">without ever asking for gas</span></h1>
+  <p class="lede">
+    An embeddable widget, hosted payment links, and a merchant verification library for
+    USDG on chain 4663. The customer signs one message. They never send a transaction,
+    never hold a native token, and never see the word "gas".
+  </p>
+  <div class="cta">
+    <span class="install"><span class="dollar">$</span> npm install hood-pay viem</span>
+    <a class="btn primary" href="#quickstart">Get started</a>
+    <a class="btn" href="#gasless">Why it works</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="block" id="gasless">
+  <div class="flow-head">
+    <h2>Sign &rarr; relay &rarr; settled</h2>
+  </div>
+  <p class="sub">
+    The customer's signature <em>is</em> the payment. It binds the amount, the recipient,
+    an expiry, and a nonce, so the merchant can submit it or not, but cannot change it.
+  </p>
+  <div class="flow" role="img" aria-label="Diagram: the customer signs an EIP-3009 authorization in their wallet, the merchant relays it on-chain and pays the gas, USDG moves, and a verifiable receipt is issued.">
+    <div class="actor">
+      <div class="avatar">👤</div>
+      <div class="label">Customer</div>
+      <div class="sub">holds USDG, no gas</div>
+    </div>
+    <div class="wire">
+      <div class="track"></div>
+      <div class="caption c1">1. open payment link</div>
+      <div class="caption c2">2. sign authorization (no gas)</div>
+      <div class="caption c3">3. merchant relays, pays gas</div>
+      <div class="caption c4">4. settled + verifiable receipt</div>
+      <div class="packet"></div>
+      <div class="packet b"></div>
+    </div>
+    <div class="actor">
+      <div class="avatar">🏪</div>
+      <div class="label">Merchant</div>
+      <div class="sub">relays, pays gas</div>
+    </div>
+  </div>
+  <div class="flow-legend">
+    <span><span class="dot a"></span> customer leg (a signature, not a transaction)</span>
+    <span><span class="dot b"></span> settlement leg (EIP-3009 transferWithAuthorization)</span>
+  </div>
+
+  <h2 style="margin-top:44px">How we know</h2>
+  <p class="sub">
+    USDG is a facet/diamond contract, so the honest way to ask whether it implements a
+    function is <code>getFacet(bytes4)</code>. Reproduce all of this with
+    <code>npm run verify:usdg</code>.
+  </p>
+<pre><code>robinhood (chain 4663)  USDG 0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168
+  getFacet(0xe3ee160e)  transferWithAuthorization      0x780d30b6...b01309  [OK]
+  getFacet(0xef55bec6)  receiveWithAuthorization       0x780d30b6...b01309  [OK]
+  getFacet(0xe94a0102)  authorizationState             0x780d30b6...b01309  [OK]
+  getFacet(0xdeadbeef)  CONTROL: not a real function   not registered  [OK: control is unregistered]
+  DOMAIN_SEPARATOR() live       0x7a3d7400b27830f4f91c2c16a082486d67c1befecaec2f53b33f1f35d5b62036
+  reconstructed offline         0x7a3d7400b27830f4f91c2c16a082486d67c1befecaec2f53b33f1f35d5b62036
+  name="Global Dollar" version="1"  [OK: match]
+  decimals()                    6  [OK]
+
+PASS: USDG exposes EIP-3009 and the EIP-712 domain reconstructs on every network.</code></pre>
+
+  <div class="disclosure">
+    The <code>0xdeadbeef</code> line is a negative control. Without it, a
+    <code>getFacet</code> that returned a facet for everything would look like proof of
+    support. With it, a broken probe is visibly broken.
+  </div>
+
+  <p class="sub" style="max-width:none">
+    The EIP-712 domain reconstructs offline to exactly the contract's own
+    <code>DOMAIN_SEPARATOR()</code> on both networks, so the message hood-pay asks a
+    customer to sign is the message the token will verify. The mainnet value is asserted
+    as a fixed vector in the test suite.
+  </p>
+</section>
+
+<section class="block" id="vs-permit">
+  <h2>Why EIP-3009 and not <code>permit</code></h2>
+  <p class="sub">
+    EIP-2612 <code>permit</code> is also registered on USDG. hood-pay does not use it,
+    because an allowance is the wrong shape for a checkout.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th></th><th>EIP-2612 permit</th><th>EIP-3009 transferWithAuthorization</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>What the signature authorizes</td><td>an allowance to a spender</td><td class="yes">one exact transfer</td></tr>
+        <tr><td>Steps to get paid</td><td>2 (permit, then transferFrom)</td><td class="yes">1</td></tr>
+        <tr><td>Residual risk after payment</td><td>a live allowance remains</td><td class="yes">none, the nonce is spent</td></tr>
+        <tr><td>Recipient bound in signature</td><td class="no">no</td><td class="yes">yes</td></tr>
+        <tr><td>Amount bound in signature</td><td class="no">ceiling only</td><td class="yes">exactly</td></tr>
+        <tr><td>Replay protection</td><td>sequential nonce</td><td class="yes">arbitrary nonce, consumed on use</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="disclosure">
+    hood-pay derives the EIP-3009 nonce from <code>(intent id, payer)</code>, so
+    <code>authorizationState</code> on the token contract becomes the double-charge guard.
+    Even a merchant database that got its locking wrong cannot charge the same intent
+    twice.
+  </div>
+</section>
+
+<section class="block" id="quickstart">
+  <h2>Quickstart</h2>
+  <p class="sub">Node &ge; 20. <code>viem</code> is a peer dependency on the server; the browser bundle has none.</p>
+
+  <div class="tabs" role="tablist" aria-label="Quickstart by surface">
+    <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-server" id="btn-server">Merchant server</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-widget" id="btn-widget">Widget</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-link" id="btn-link">Payment link</button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-hook" id="btn-hook">Webhook</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-server" role="tabpanel" aria-labelledby="btn-server">
+<pre><code>import express from 'express'
+import { createPublicClient, createWalletClient, http } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
+import { robinhood } from 'viem/chains'
+import { HoodPayMerchant, SqliteStore, expressHoodPay } from 'hood-pay/server'
+
+const account = privateKeyToAccount(process.env.HOOD_PAY_RELAYER_KEY)
+const transport = http('https://rpc.mainnet.chain.robinhood.com')
+
+const merchant = new HoodPayMerchant({
+  payTo: '0xYourReceivingAddress',
+  network: 'robinhood',
+  baseUrl: 'https://shop.example.com',
+  store: new SqliteStore('./data/hood-pay.sqlite'),
+  relayer: {
+    reader: createPublicClient({ chain: robinhood, transport }),
+    writer: createWalletClient({ account, chain: robinhood, transport }),
+    address: account.address,
+    chain: robinhood,
+    maxAmountPerPayment: 1_000_000_000n,
+  },
+})
+
+const app = express()
+app.use(express.json())
+app.use(expressHoodPay({ merchant, apiKey: process.env.HOOD_PAY_API_KEY }))
+app.listen(3000)</code></pre>
+  </div>
+
+  <div class="tab-panel" id="tab-widget" role="tabpanel" aria-labelledby="btn-widget">
+<pre><code>&lt;script src="https://unpkg.com/hood-pay/dist/browser/hood-pay.iife.js"&gt;&lt;/script&gt;
+
+&lt;hood-pay-button
+  intent-id="pi_2f1c..."
+  api-base="https://shop.example.com"
+  merchant-name="Example Shop"
+  label="Pay 12.50 USDG"
+  theme="auto"&gt;&lt;/hood-pay-button&gt;
+
+&lt;script&gt;
+  document.querySelector('hood-pay-button')
+    .addEventListener('hood-pay:settled', (event) =&gt; {
+      console.log(event.detail.receipt.digest)
+    })
+&lt;/script&gt;</code></pre>
+    <p class="sub" style="margin-top:14px">
+      27 kB minified, zero dependencies, everything inside a shadow root. React wrapper:
+      <code>import { HoodPayButton } from 'hood-pay/widget/react'</code>.
+    </p>
+  </div>
+
+  <div class="tab-panel" id="tab-link" role="tabpanel" aria-labelledby="btn-link">
+<pre><code>const { intent, url } = await merchant.createPaymentLink({
+  amount: '12.50',                 // USDG, exact
+  description: 'One large widget',
+  metadata: { orderId: 'A-1043' },
+  idempotencyKey: 'order-A-1043',  // repeat-safe
+  expiresInSeconds: 900,
+})
+
+console.log(url)  // https://shop.example.com/pay/pi_2f1c...</code></pre>
+    <p class="sub" style="margin-top:14px">
+      The hosted page is one self-contained document: inline styles, inline script, no
+      CDN, no fonts, no external requests. The amount and terms render on the server, so
+      the customer sees them before any JavaScript runs.
+    </p>
+  </div>
+
+  <div class="tab-panel" id="tab-hook" role="tabpanel" aria-labelledby="btn-hook">
+<pre><code>import { constructWebhookEvent } from 'hood-pay/server'
+
+// Mount BEFORE express.json(): the signature covers the exact bytes received.
+app.post('/hooks/hood-pay', express.raw({ type: 'application/json' }), async (req, res) =&gt; {
+  try {
+    const event = await constructWebhookEvent({
+      secret: process.env.HOOD_PAY_WEBHOOK_SECRET,
+      rawBody: req.body.toString('utf8'),
+      signature: req.header('Hood-Pay-Signature') ?? '',
+      toleranceSeconds: 300,
+    })
+    if (event.type === 'payment_intent.succeeded') {
+      await fulfil(event.data.intent.metadata.orderId, event.data.receipt)
+    }
+    res.sendStatus(200)
+  } catch {
+    res.sendStatus(400)
+  }
+})</code></pre>
+    <p class="sub" style="margin-top:14px">
+      Header format: <code>Hood-Pay-Signature: t=1763558400,v1=0x9f2c...</code>, an
+      HMAC-SHA-256 over <code>${t}.${rawBody}</code>. Deduplicate on
+      <code>Hood-Pay-Event-Id</code>; retries are expected.
+    </p>
+  </div>
+</section>
+
+<section class="block" id="states">
+  <h2>Every state is designed</h2>
+  <p class="sub">
+    The widget renders exactly one design per state, and the type system refuses a state
+    that has no design. No fake progress bars: each state reflects a real await.
+  </p>
+  <div class="states">
+    <div class="state"><div class="row"><span class="dot"></span> Ready to pay</div><p><code>idle</code>: priced from the intent</p></div>
+    <div class="state"><div class="row"><span class="dot warning"></span> No wallet detected</div><p><code>wallet-missing</code>: EIP-6963 found nothing</p></div>
+    <div class="state"><div class="row"><span class="dot warning"></span> Wrong network</div><p><code>wrong-chain</code>: offers to switch or add</p></div>
+    <div class="state"><div class="row"><span class="dot danger"></span> Not enough USDG</div><p><code>insufficient-usdg</code>: caught before broadcast</p></div>
+    <div class="state"><div class="row"><span class="dot progress"></span> Waiting for your wallet</div><p><code>awaiting-signature</code>: the only prompt</p></div>
+    <div class="state"><div class="row"><span class="dot progress"></span> Settling on-chain</div><p><code>relaying</code>: merchant pays the gas</p></div>
+    <div class="state"><div class="row"><span class="dot success"></span> Payment complete</div><p><code>settled</code>: receipt + explorer link</p></div>
+    <div class="state"><div class="row"><span class="dot danger"></span> Payment failed</div><p><code>failed</code>: retryable, nonce unspent</p></div>
+    <div class="state"><div class="row"><span class="dot"></span> Link expired</div><p><code>expired</code>: ask for a new one</p></div>
+    <div class="state"><div class="row"><span class="dot"></span> Payment canceled</div><p><code>canceled</code>: merchant withdrew it</p></div>
+  </div>
+</section>
+
+<section class="block" id="verify">
+  <h2>Receipts anyone can check</h2>
+  <p class="sub">
+    A hood-pay receipt is not a claim the merchant makes. It points at on-chain facts, and
+    anyone with an RPC URL can confirm them without asking the merchant, hood-pay, or an
+    indexer.
+  </p>
+<pre><code>import { verifyReceipt, formatVerification } from 'hood-pay/verify'
+
+const result = await verifyReceipt({ receipt })
+console.log(formatVerification(result))</code></pre>
+  <div class="grid" style="margin-top:16px">
+    <div class="card"><h3>1. Transaction succeeded</h3><p>It exists on chain and did not revert.</p></div>
+    <div class="card"><h3>2. Target is USDG</h3><p>Sent to the USDG contract for the stated network.</p></div>
+    <div class="card"><h3>3. Transfer matches exactly</h3><p>A <code>Transfer</code> log moves precisely the stated amount, payer to merchant.</p></div>
+    <div class="card"><h3>4. AuthorizationUsed</h3><p>The event names the same payer and the same nonce.</p></div>
+    <div class="card"><h3>5. Authorization consumed</h3><p><code>authorizationState</code> is now true: it can never be replayed.</p></div>
+    <div class="card"><h3>6. Digest recomputes</h3><p>Catches tampering with fields that are not observable on chain.</p></div>
+  </div>
+  <div class="disclosure">
+    No receipt at all? <code>verifyPaymentByHash({ txHash, network, payTo, amount })</code>
+    confirms a payment from a transaction hash and what you were owed.
+  </div>
+</section>
+
+<section class="block" id="vs-hood402">
+  <h2>hood-pay or hood402</h2>
+  <p class="sub">
+    Same chain, same token, same settlement mechanism. Completely different product.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>hood-pay</th><th>hood402</th></tr></thead>
+      <tbody>
+        <tr><td>Who pays</td><td>a person with a wallet</td><td>an agent or a script</td></tr>
+        <tr><td>Trigger</td><td>a payment link or a cart</td><td>an HTTP 402 response</td></tr>
+        <tr><td>Surface</td><td>hosted page, widget, webhooks</td><td>middleware, fetch wrapper, facilitator</td></tr>
+        <tr><td>Amount</td><td>exact, fixed by an intent</td><td>at least the resource price</td></tr>
+        <tr><td>Nonce</td><td>derived from the intent and payer</td><td>random per request</td></tr>
+        <tr><td>Settlement</td><td colspan="2" class="yes">EIP-3009 transferWithAuthorization on USDG (identical)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub" style="margin-top:16px">
+    hood-pay depends on <code>hood402</code> for the protocol-level pieces: the EIP-3009
+    ABI fragment and EIP-712 signature recovery. A parity test asserts the two packages'
+    chain constants match field by field, so they cannot drift.
+  </p>
+</section>
+
+<section class="block" id="install">
+  <h2>Install</h2>
+<pre><code>npm install hood-pay viem</code></pre>
+  <div class="grid" style="margin-top:16px">
+    <div class="card"><h3><code>hood-pay</code></h3><p>Intents, amounts, EIP-712, receipts. No server or browser dependencies.</p></div>
+    <div class="card"><h3><code>hood-pay/server</code></h3><p>Merchant, relay, webhooks, SQLite and in-memory stores, Express and Hono adapters.</p></div>
+    <div class="card"><h3><code>hood-pay/client</code></h3><p>Browser SDK: wallet discovery, signing, one snapshot per state.</p></div>
+    <div class="card"><h3><code>hood-pay/widget</code></h3><p>The <code>&lt;hood-pay-button&gt;</code> element, plus a React wrapper.</p></div>
+    <div class="card"><h3><code>hood-pay/verify</code></h3><p>Standalone on-chain verification. Needs only an RPC URL.</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>hood-pay: USDG checkout for Robinhood Chain (chain 4663)</span>
+    <span>
+      <a href="https://github.com/nirholas/robinhood-chain-pay">GitHub</a> ·
+      <a href="https://github.com/nirholas/hood402">hood402</a> ·
+      <a href="https://docs.robinhood.com/chain/">Chain docs</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  // Tabs: roving selection, arrow-key navigable, no dependencies.
+  const buttons = Array.from(document.querySelectorAll('.tab-btn'))
+  function select(button) {
+    for (const other of buttons) {
+      const selected = other === button
+      other.setAttribute('aria-selected', String(selected))
+      const panel = document.getElementById(other.getAttribute('aria-controls'))
+      if (panel) panel.classList.toggle('active', selected)
+    }
+  }
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', () => select(button))
+    button.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+      event.preventDefault()
+      const delta = event.key === 'ArrowRight' ? 1 : -1
+      const next = buttons[(index + delta + buttons.length) % buttons.length]
+      next.focus()
+      select(next)
+    })
+  })
+</script>
+</body>
+</html>
