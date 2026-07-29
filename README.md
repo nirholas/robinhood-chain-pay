@@ -7,7 +7,7 @@ hold a native token, and never see the word "gas". The merchant relays the
 signed authorization, pays the gas, and gets a receipt that anyone can verify
 on-chain with nothing but an RPC URL.
 
-Docs: **https://nirholas.github.io/hood-pay/**
+Docs: **https://nirholas.github.io/robinhood-chain-pay/**
 
 > hood-pay is human checkout. Its sibling [`hood402`](https://github.com/nirholas/hood402)
 > is the machine-to-machine HTTP 402 rail on the same chain and the same
