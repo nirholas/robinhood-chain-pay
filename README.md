@@ -349,7 +349,7 @@ recorded and readable via `store.listWebhookDeliveries(intentId)`.
 | `NETWORKS`, `requireNetwork`, `txUrl` | Chain registry |
 | `HoodPayError` and subclasses | Every failure, with a stable `code` |
 
-### `hood-pay/server`
+### `@three-ws/hood-pay/server`
 
 | Export | Purpose |
 |---|---|
@@ -362,7 +362,7 @@ recorded and readable via `store.listWebhookDeliveries(intentId)`.
 | `preflight` / `relayAuthorization` | The settlement path on its own |
 | `signWebhook` / `verifyWebhookSignature` / `constructWebhookEvent` | Webhooks |
 
-### `hood-pay/client`
+### `@three-ws/hood-pay/client`
 
 | Export | Purpose |
 |---|---|
@@ -371,7 +371,7 @@ recorded and readable via `store.listWebhookDeliveries(intentId)`.
 | `connect` / `ensureChain` / `signTypedData` | The wallet steps individually |
 | `stateForErrorCode` | Map any error code onto a designed state |
 
-### `hood-pay/widget` and `hood-pay/widget/react`
+### `@three-ws/hood-pay/widget` and `@three-ws/hood-pay/widget/react`
 
 | Export | Purpose |
 |---|---|
@@ -379,7 +379,7 @@ recorded and readable via `store.listWebhookDeliveries(intentId)`.
 | `HoodPayButton` | The React wrapper |
 | `describeState(snapshot)` | The view model, one row per state |
 
-### `hood-pay/verify`
+### `@three-ws/hood-pay/verify`
 
 | Export | Purpose |
 |---|---|

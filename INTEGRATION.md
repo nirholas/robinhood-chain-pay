@@ -153,7 +153,7 @@ the browser: it mints payment links in your name.
 
 ### Neither
 
-Drive it yourself with `hood-pay/client`:
+Drive it yourself with `@three-ws/hood-pay/client`:
 
 ```ts
 import { HoodPayCheckout } from '@three-ws/hood-pay/client'
