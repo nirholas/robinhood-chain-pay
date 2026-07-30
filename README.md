@@ -7,9 +7,11 @@ hold a native token, and never see the word "gas". The merchant relays the
 signed authorization, pays the gas, and gets a receipt that anyone can verify
 on-chain with nothing but an RPC URL.
 
-Docs: **https://nirholas.github.io/robinhood-chain-pay/**
+Docs: **https://github.com/nirholas/robinhood-chain-pay** (the reference pages under
+[`docs/`](./docs/index.html) render from the repo; the hosted docs site is not published
+right now, so the repo is the canonical source).
 
-> hood-pay is human checkout. Its sibling [`hood402`](https://github.com/nirholas/hood402)
+> hood-pay is human checkout. Its sibling [`hood402`](https://github.com/nirholas/robinhood-chain-x402)
 > is the machine-to-machine HTTP 402 rail on the same chain and the same
 > settlement mechanism. If your payer is an agent hitting an API, use hood402.
 > If your payer is a person with a wallet and a cart, use hood-pay.
@@ -157,7 +159,7 @@ is missing when scripting is off.
 One script tag and one element:
 
 ```html
-<script src="https://unpkg.com/hood-pay/dist/browser/hood-pay.iife.js"></script>
+<script src="https://unpkg.com/@three-ws/hood-pay/dist/browser/hood-pay.iife.js"></script>
 
 <hood-pay-button
   intent-id="pi_2f1c..."
@@ -177,6 +179,12 @@ One script tag and one element:
 The bundle is 27 kB minified with no dependencies, because the browser half of
 hood-pay never imports `viem`: it builds the EIP-712 payload itself and hands it
 to the wallet's `eth_signTypedData_v4`.
+
+If you are pinned to `@three-ws/hood-pay@0.1.1`, that one tarball published the
+browser build a directory deeper, at
+`https://unpkg.com/@three-ws/hood-pay@0.1.1/dist/browser/@three-ws/hood-pay.iife.js`.
+The path above is the one the `exports` map has always declared and is correct
+from the next release on.
 
 Everything lives inside a shadow root, so the merchant's CSS cannot break the
 widget and the widget cannot leak a rule onto the merchant's page. Branding

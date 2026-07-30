@@ -7,7 +7,12 @@ import { defineConfig } from 'tsup'
  * small enough to drop in with a single `<script>` tag.
  */
 export default defineConfig({
-  entry: { '@three-ws/hood-pay': 'src/browser.ts' },
+  // The entry key is the output basename, so it must stay unscoped: the
+  // package.json `exports` map and `sideEffects` globs both point at
+  // `dist/browser/hood-pay.js` / `hood-pay.iife.js`. Using the scoped package
+  // name here emits `dist/browser/@three-ws/hood-pay.js` instead and breaks
+  // every `@three-ws/hood-pay/browser` import.
+  entry: { 'hood-pay': 'src/browser.ts' },
   outDir: 'dist/browser',
   format: ['esm', 'iife'],
   globalName: 'HoodPay',

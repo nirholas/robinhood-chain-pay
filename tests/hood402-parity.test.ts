@@ -39,9 +39,27 @@ describe('network registry parity with hood402', () => {
   })
 
   it('resolves the same aliases', () => {
-    for (const alias of ['robinhood', 'robinhood-chain', '4663', 'robinhood-testnet', '46630']) {
+    // Every alias hood402 ships. `mainnet` and `testnet` are hood-pay
+    // additions that hood402 gained after 0.1.1, so they are asserted
+    // separately below rather than against the installed copy.
+    for (const alias of [
+      'robinhood',
+      'robinhood-chain',
+      'robinhood-mainnet',
+      '4663',
+      'eip155:4663',
+      'robinhood-testnet',
+      'robinhood-sepolia',
+      '46630',
+      'eip155:46630',
+    ]) {
       expect(resolveNetwork(alias)?.chainId).toBe(hood402.resolveNetwork(alias)?.chainId)
     }
+  })
+
+  it('resolves the bare mainnet/testnet names too', () => {
+    expect(resolveNetwork('mainnet')?.chainId).toBe(ROBINHOOD_MAINNET.chainId)
+    expect(resolveNetwork('testnet')?.chainId).toBe(ROBINHOOD_TESTNET.chainId)
   })
 })
 

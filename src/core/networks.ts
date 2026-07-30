@@ -80,6 +80,7 @@ const ALIASES: Record<string, HoodPayNetwork> = {
   '4663': ROBINHOOD_MAINNET,
   'eip155:4663': ROBINHOOD_MAINNET,
   'robinhood-testnet': ROBINHOOD_TESTNET,
+  'robinhood-sepolia': ROBINHOOD_TESTNET,
   testnet: ROBINHOOD_TESTNET,
   '46630': ROBINHOOD_TESTNET,
   'eip155:46630': ROBINHOOD_TESTNET,

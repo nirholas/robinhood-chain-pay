@@ -141,7 +141,7 @@ workflows, and anywhere you do not control the page.
 ### Widget (embedded)
 
 ```html
-<script src="https://unpkg.com/hood-pay/dist/browser/hood-pay.iife.js"></script>
+<script src="https://unpkg.com/@three-ws/hood-pay/dist/browser/hood-pay.iife.js"></script>
 <hood-pay-button intent-id="pi_2f1c..." api-base="https://shop.example.com"></hood-pay-button>
 ```
 

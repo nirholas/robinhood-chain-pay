@@ -6,7 +6,7 @@
  * registers `<hood-pay-button>` and exposes the SDK on `window.HoodPay`.
  *
  * ```html
- * <script src="https://unpkg.com/hood-pay/dist/browser/hood-pay.iife.js"></script>
+ * <script src="https://unpkg.com/@three-ws/hood-pay/dist/browser/hood-pay.iife.js"></script>
  * <hood-pay-button intent-id="pi_..." api-base="https://shop.example.com"></hood-pay-button>
  * ```
  */
