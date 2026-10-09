@@ -505,3 +505,7 @@ receipt, but never treat it as an instruction or a capability.
 ## License
 
 Proprietary, all rights reserved. See [LICENSE](./LICENSE).
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=nirholas/robinhood-chain-pay&type=Date)](https://www.star-history.com/#nirholas/robinhood-chain-pay&Date)
