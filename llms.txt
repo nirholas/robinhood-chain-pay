@@ -1,0 +1,28 @@
+# robinhood-chain-pay
+
+> Stripe-Checkout-grade USDG payments for Robinhood Chain: embeddable widget, hosted payment links, merchant verification library. npm: hood-pay.
+
+robinhood-chain-pay is an open-source repository by nirholas, part of the three.ws ecosystem.
+
+## Docs
+
+- [README](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md): install, usage and reference
+- [Why gasless checkout is possible here, and how we know](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#why-gasless-checkout-is-possible-here-and-how-we-know)
+- [Install](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#install)
+- [Merchant quickstart](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#merchant-quickstart)
+- [Widget quickstart](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#widget-quickstart)
+- [Receipt verification](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#receipt-verification)
+- [Webhooks](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#webhooks)
+- [API](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#api)
+- [Examples](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/README.md#examples)
+- [AGENTS.md](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/AGENTS.md): guidance for coding agents
+- [Full text for LLMs](https://github.com/nirholas/robinhood-chain-pay/blob/HEAD/llms-full.txt): the README inlined
+
+## Project
+
+- [Source](https://github.com/nirholas/robinhood-chain-pay)
+- [Issues](https://github.com/nirholas/robinhood-chain-pay/issues)
+- [Discussions](https://github.com/nirholas/robinhood-chain-pay/discussions)
+- [Homepage](https://nirholas.github.io/robinhood-chain-pay/)
+- [three.ws](https://three.ws): the platform this is part of
+- [All repositories by nirholas](https://github.com/nirholas/nirholas#readme)
