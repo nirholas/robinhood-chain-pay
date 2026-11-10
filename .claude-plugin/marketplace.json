@@ -1,0 +1,21 @@
+{
+  "name": "robinhood-chain-pay",
+  "owner": {
+    "name": "nirholas"
+  },
+  "description": "Build USDG checkout on Robinhood Chain with payment links and a pay button, and verify receipts independently on-chain.",
+  "plugins": [
+    {
+      "name": "hood-pay",
+      "source": "./plugins/hood-pay",
+      "description": "Build USDG checkout on Robinhood Chain with payment links and a pay button, and verify receipts independently on-chain.",
+      "category": "finance",
+      "tags": [
+        "robinhood-chain",
+        "payments",
+        "usdg",
+        "checkout"
+      ]
+    }
+  ]
+}
