@@ -1,0 +1,17 @@
+{
+  "name": "hood-pay",
+  "version": "0.1.1",
+  "description": "Build USDG checkout on Robinhood Chain with payment links and a pay button, and verify receipts independently on-chain.",
+  "author": {
+    "name": "nirholas"
+  },
+  "repository": "https://github.com/nirholas/robinhood-chain-pay",
+  "homepage": "https://nirholas.github.io/robinhood-chain-pay/",
+  "keywords": [
+    "robinhood-chain",
+    "payments",
+    "usdg",
+    "eip-3009",
+    "checkout"
+  ]
+}
